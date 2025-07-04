@@ -7,5 +7,6 @@ public interface ProviderDao {
     Provider searchByProviderId(String providerId) throws Exception;
     void updateProvider(Provider provider) throws Exception;
     void deleteProvider(String providerId) throws Exception;
+    Provider login(String email, String encryptedPassword) throws Exception;
 
 }

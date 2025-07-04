@@ -2,14 +2,17 @@ package com.java.jsf.Provider.Controller;
 
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
 import com.java.jsf.Provider.dao.ProviderDao;
 import com.java.jsf.Provider.daoImpl.ProviderDaoImpl;
 import com.java.jsf.Provider.model.LoginStatus;
 import com.java.jsf.Provider.model.Provider;
+import com.java.jsf.Util.EncryptPassword;
 
 public class ProviderController {
     private Provider provider = new Provider();
-    private List<Provider> providers;
 
     private ProviderDao providerDao = new ProviderDaoImpl();
 
@@ -32,7 +35,49 @@ public class ProviderController {
 
         return "Success";
     }
+    
+    public String login() throws Exception {
+        System.out.println("Login method triggered");
 
+        if (provider == null) {
+            System.out.println("Provider object is null");
+            return null;
+        }
+
+        System.out.println("Email entered: " + provider.getEmail());
+        System.out.println("Password entered (plain): " + provider.getPassword());
+
+        if (provider.getEmail() == null || provider.getPassword() == null) {
+            System.out.println("Email or password is null");
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Email and password are required.", null));
+            return null;
+        }
+
+        String encryptedPassword = EncryptPassword.getCode(provider.getPassword());
+        System.out.println("Encrypted password: " + encryptedPassword);
+
+        Provider dbProvider = providerDao.login(provider.getEmail(), encryptedPassword);
+
+        if (dbProvider != null) {
+            System.out.println("Provider found in DB: " + dbProvider.getEmail());
+            if (dbProvider.getStatus() == LoginStatus.PENDING) {
+                System.out.println("Login successful. Redirecting to success page.");
+                return "loginSuccess?faces-redirect=true"; // success.xhtml
+            } else {
+                System.out.println("Provider account not approved.");
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Your account is not approved yet.", null));
+                return null;
+            }
+        } else {
+            System.out.println("No matching provider found for given credentials.");
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid email or password.", null));
+            return null;
+        }
+    }
+    
     // Fetch specific provider by ID
     public Provider getProviderById(String providerId) throws Exception {
         System.out.println("Fetching provider by ID: " + providerId);

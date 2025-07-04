@@ -125,4 +125,26 @@ public class ProviderDaoImpl implements ProviderDao{
 	        }
 	    }
 	}
+	@Override
+	public Provider login(String email, String encryptedPassword) throws Exception {
+	    SessionFactory sf = SessionHelper.getSessionFactory();
+	    Session session = sf.openSession();
+	    Provider provider = null;
+
+	    try {
+	        Query query = session.createQuery(
+	            "FROM Provider WHERE email = :email AND password = :password");
+	        query.setParameter("email", email);
+	        query.setParameter("password", encryptedPassword);
+
+	        provider = (Provider) query.uniqueResult();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        throw e;
+	    } finally {
+	        session.close();
+	    }
+
+	    return provider;
+	}
 }
