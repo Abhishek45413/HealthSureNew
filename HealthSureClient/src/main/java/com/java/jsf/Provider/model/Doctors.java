@@ -1,17 +1,21 @@
 package com.java.jsf.Provider.model;
 
 public class Doctors {
+	    
 	    private String doctorId;
-	    private Provider provider;
+	    private Provider providers;
 	    private String doctorName;
 	    private Gender gender;
 	    private String qualification;
 	    private String specialization;
 	    private String licenseNo;
 	    private String email;
+	    private String phoneNumber;
 	    private String address;
 	    private DoctorType type;  // STANDARD or ADHOC
 	    private DoctorStatus status;
+	    
+	    private Provider provider = new Provider();
 
 		public String getDoctorId() {
 			return doctorId;
@@ -62,6 +66,12 @@ public class Doctors {
 		public void setEmail(String email) {
 			this.email = email;
 		}
+		public String getPhoneNumber() {
+			return phoneNumber;
+		}
+		public void setPhoneNumber(String phoneNumber) {
+			this.phoneNumber = phoneNumber;
+		}
 		public String getAddress() {
 			return address;
 		}
@@ -82,7 +92,7 @@ public class Doctors {
 		}
 
 		public Doctors(String doctorId, Provider provider, String providerId, String doctorName, Gender gender,
-				String qualification, String specialization, String licenseNo, String email, String address,
+				String qualification, String specialization, String licenseNo, String email,String phoneNumber, String address,
 				DoctorType type, DoctorStatus status) {
 			super();
 			this.doctorId = doctorId;
@@ -93,15 +103,18 @@ public class Doctors {
 			this.specialization = specialization;
 			this.licenseNo = licenseNo;
 			this.email = email;
+			this.phoneNumber = phoneNumber;
 			this.address = address;
 			this.type = type;
 			this.status = status;
 		}
 
 		public Doctors() {
-			super();
-			// TODO Auto-generated constructor stub
+			 this.provider = new Provider();
+			 this.type = DoctorType.STANDARD;
+			 this.status = DoctorStatus.ACTIVE;
 		}
+		
 
 
 

@@ -11,6 +11,14 @@
     <managed-bean-class>com.java.jsf.Provider.Controller.ProviderController</managed-bean-class>
     <managed-bean-scope>request</managed-bean-scope>
   </managed-bean>
+  
+  <managed-bean>
+    <managed-bean-name>doctors</managed-bean-name>
+    <managed-bean-class>com.java.jsf.Provider.model.Doctors</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+
+  
 
   <!-- Navigation Rules -->
   <navigation-rule>

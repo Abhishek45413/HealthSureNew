@@ -7,8 +7,7 @@ import org.hibernate.Transaction;
 
 import com.java.jsf.Provider.dao.ProviderDao;
 import com.java.jsf.Provider.model.Provider;
-import com.java.jsf.Util.EncryptPassword;
-import com.java.jsf.Util.SessionHelper;
+ import com.java.jsf.Util.SessionHelper;
 
 public class ProviderDaoImpl implements ProviderDao{
 
@@ -28,12 +27,6 @@ public class ProviderDaoImpl implements ProviderDao{
 	        String newId = generateProviderId();
 	        provider.setProviderId(newId);
 
-	        // Encrypt password
-	        if (provider.getPassword() != null && !provider.getPassword().isEmpty()) {
-	            String encryptedPassword = EncryptPassword.getCode(provider.getPassword());
-	            provider.setPassword(encryptedPassword);
-	        }
-
 	        session.save(provider);
 	        trans.commit();
 	        System.out.println("Provider saved with ID: " + newId);
@@ -46,63 +39,6 @@ public class ProviderDaoImpl implements ProviderDao{
 	        session.close();
 	    }
 	}
-	@Override
-	public Provider searchByProviderId(String providerId) throws Exception {
-		SessionFactory sf = SessionHelper.getSessionFactory();
-		session = sf.openSession();
-
-		 try {
-			return (Provider) session.get(Provider.class, providerId);
-		} finally {
-			session.close();
-		}
-	}
-
-
-	@Override
-	public void updateProvider(Provider provider) throws Exception {
-		SessionFactory sf = SessionHelper.getSessionFactory();
-		Transaction trans = null;
-		session = sf.openSession();
-
-		try {
-			trans = session.beginTransaction();
-			session.update(provider);
-			trans.commit();
-		} catch (Exception e) {
-			if (trans != null) {
-				trans.rollback();
-			}
-			throw e;
-		}
-		finally {
-			session.close();
-			}
-	}
-
-	@Override
-	public void deleteProvider(String providerId) throws Exception {
-		SessionFactory sf = SessionHelper.getSessionFactory();
-		Transaction trans = null;
-		session = sf.openSession();
-
-		try {
-			trans = session.beginTransaction();
-			Provider provider = (Provider) session.get(Provider.class, providerId);
-			if (provider != null) {
-				session.delete(provider);
-			}
-			trans.commit();
-		} catch (Exception e) {
-			if(trans != null) {
-				trans.rollback();
-			}
-			throw e;
-		}finally {
-			session.close();
-		}
-	}
-	
 	
 	public String generateProviderId() {
 	    Session session = null;
@@ -110,14 +46,14 @@ public class ProviderDaoImpl implements ProviderDao{
 	        sf = SessionHelper.getSessionFactory();
 	        session = sf.openSession();
 
-	        Query query = session.getNamedQuery("ProviderId"); // This should be defined in your Provider.hbm.xml
+	        Query query = session.getNamedQuery("ProviderId"); 
 	        String latestId = (String) query.uniqueResult();
 
 	        if (latestId == null) {
-	            return "P001";
+	            return "PROV01";
 	        } else {
-	            int num = Integer.parseInt(latestId.substring(1));
-	            return "P" + String.format("%03d", num + 1);
+	            int num = Integer.parseInt(latestId.substring(4));
+	            return "PROV" + String.format("%03d", num + 1);
 	        }
 	    } finally {
 	        if (session != null && session.isOpen()) {
@@ -147,4 +83,49 @@ public class ProviderDaoImpl implements ProviderDao{
 
 	    return provider;
 	}
+
+	@Override
+	public boolean emailExists(String email) throws Exception {
+		Session session = SessionHelper.getSessionFactory().openSession();
+		
+		try {
+			Query query = session.createQuery("SELECT COUNT(p) FROM Provider p WHERE p.email = :email");
+			query.setParameter("email", email);
+			Long count = (Long)query.uniqueResult();
+			return count > 0;
+		} finally {
+			session.close();
+		}
+	}
+
+	@Override
+	public boolean phoneExists(String phone) throws Exception {
+		 Session session = SessionHelper.getSessionFactory().openSession();
+	     
+	        try {
+	            Query query = session.createQuery(
+	                "SELECT COUNT(p) FROM Provider p WHERE p.telephone = :phone");
+	            query.setParameter("phone", phone);
+	            Long count = (Long) query.uniqueResult();
+	            return count > 0;
+	        } finally {
+	            session.close();
+	        }
+
+	}
+
+	@Override
+	public boolean zipcodeExists(String zipcode) throws Exception {
+	    Session session = SessionHelper.getSessionFactory().openSession();
+
+        try {
+            Query query = session.createQuery(
+                "SELECT COUNT(p) FROM Provider p WHERE p.zipcode = :zipcode");
+            query.setParameter("zipcode", zipcode);
+            Long count = (Long) query.uniqueResult();
+            return count > 0;
+        } finally {
+            session.close();
+        }
+    }
 }

@@ -14,7 +14,7 @@ public class DoctorsController {
 
 	    // Add/register new doctor
 	    public String addDoctor() throws Exception {
-	        doctorDao.addDoctor(doctor);
+	        doctorDao.addDoctors(doctor);
 	        doctor = new Doctors(); // reset form
 	        return "doctor_success"; // define in faces-config.xml
 	    }

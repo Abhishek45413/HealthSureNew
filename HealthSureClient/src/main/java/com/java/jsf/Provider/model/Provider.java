@@ -7,6 +7,7 @@ public class Provider {
 	    private String providerName;
 	    private String hospitalName;
 	    private String email;
+	    private String telephone;
 	    private String address;
 	    private String city;
 	    private String state;
@@ -39,6 +40,12 @@ public class Provider {
 		}
 		public void setEmail(String email) {
 			this.email = email;
+		}
+		public String getTelephone() {
+			return telephone;
+		}
+		public void setTelephone(String telephone) {
+			this.telephone = telephone;
 		}
 		public String getAddress() {
 			return address;
@@ -83,13 +90,14 @@ public class Provider {
 			this.createdAt = createdAt;
 		}
 
-		public Provider(String providerId, String providerName, String hospitalName, String email, String address,
+		public Provider(String providerId, String providerName, String hospitalName, String email,String telephone, String address,
 				String city, String state, String zipcode, String password, LoginStatus status, Date createdAt) {
 			super();
 			this.providerId = providerId;
 			this.providerName = providerName;
 			this.hospitalName = hospitalName;
 			this.email = email;
+			this.telephone = telephone;
 			this.address = address;
 			this.city = city;
 			this.state = state;
@@ -103,5 +111,6 @@ public class Provider {
 			super();
 			// TODO Auto-generated constructor stub
 		}
+		
 
 }

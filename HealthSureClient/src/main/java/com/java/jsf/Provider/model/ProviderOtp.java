@@ -1,15 +1,15 @@
 package com.java.jsf.Provider.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class ProviderOtp {
 	 private int otpId;
 	    private String providerId;
-	    private ProviderType providerType;
 	    private String otpCode;
-	    private Date createdAt;
-	    private Date expiresAt;
-	    
+	    private LocalDateTime createdAt;
+	    private LocalDateTime expiresAt;
+	    private boolean isVerified;
 	    
 		public int getOtpId() {
 			return otpId;
@@ -23,40 +23,40 @@ public class ProviderOtp {
 		public void setProviderId(String providerId) {
 			this.providerId = providerId;
 		}
-		public ProviderType getProviderType() {
-			return providerType;
-		}
-		public void setProviderType(ProviderType providerType) {
-			this.providerType = providerType;
-		}
 		public String getOtpCode() {
 			return otpCode;
 		}
 		public void setOtpCode(String otpCode) {
 			this.otpCode = otpCode;
 		}
-		public Date getCreatedAt() {
+		public LocalDateTime getCreatedAt() {
 			return createdAt;
 		}
-		public void setCreatedAt(Date createdAt) {
-			this.createdAt = createdAt;
+		public void setCreatedAt(LocalDateTime localDateTime) {
+			this.createdAt = localDateTime;
 		}
-		public Date getExpiresAt() {
+		public LocalDateTime getExpiresAt() {
 			return expiresAt;
 		}
-		public void setExpiresAt(Date expiresAt) {
-			this.expiresAt = expiresAt;
+		public void setExpiresAt(LocalDateTime localDateTime) {
+			this.expiresAt = localDateTime;
+		}
+		public boolean isVerified() {
+			return isVerified;
+		}
+		public void setVerified(boolean isVerified) {
+			this.isVerified = isVerified;
 		}
 		
-		public ProviderOtp(int otpId, String providerId, ProviderType providerType, String otpCode,
-				Date createdAt, Date expiresAt) {
+		public ProviderOtp(int otpId, String providerId, String otpCode, LocalDateTime createdAt, LocalDateTime expiresAt,
+				boolean isVerified) {
 			super();
 			this.otpId = otpId;
 			this.providerId = providerId;
-			this.providerType = providerType;
 			this.otpCode = otpCode;
 			this.createdAt = createdAt;
 			this.expiresAt = expiresAt;
+			this.isVerified = isVerified;
 		}
 		
 		public ProviderOtp() {
@@ -64,9 +64,6 @@ public class ProviderOtp {
 			// TODO Auto-generated constructor stub
 		}
 	    
-	   
+	    
 		
-
-
-
 }

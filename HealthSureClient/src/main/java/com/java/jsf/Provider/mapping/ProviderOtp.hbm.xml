@@ -13,14 +13,6 @@
 
         <property name="providerId" column="provider_id" type="string"/>
 
-        <property name="providerType" not-null="false">
-            <column name="provider_type"/>
-            <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">com.java.jsf.Provider.model.ProviderType</param>
-                <param name="useNamed">true</param>
-            </type>
-        </property>
-
         <property name="otpCode" column="otp_code" type="string" not-null="true"/>
 
         <property name="createdAt" column="created_at" type="timestamp" insert="false" update="false"/>

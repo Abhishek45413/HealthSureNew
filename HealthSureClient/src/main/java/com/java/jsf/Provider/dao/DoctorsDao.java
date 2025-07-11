@@ -5,7 +5,7 @@ import java.util.List;
 import com.java.jsf.Provider.model.Doctors;
 
 public interface DoctorsDao {
-    void addDoctor(Doctors doctors) throws Exception;
+    void addDoctors(Doctors doctors) throws Exception;
     Doctors searchByDoctorsId(int doctorId) throws Exception;
     List<Doctors> getAllDoctors() throws Exception;
     List<Doctors> searchByProviderId(String providerId) throws Exception;

@@ -15,7 +15,7 @@ public class DoctorsDaoImpl implements DoctorsDao{
 	Session session;
 
 	@Override
-	public void addDoctor(Doctors doctors) throws Exception {
+	public void addDoctors(Doctors doctors) throws Exception {
 		Session session = (Session) SessionHelper.getSessionFactory();
         session.beginTransaction();
         session.save(doctors);
