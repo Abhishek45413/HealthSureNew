@@ -3,7 +3,6 @@ package com.java.jsf.Provider.Controller;
 import java.sql.SQLException;
 
 import com.java.jsf.Provider.dao.ProviderOtpDao;
-import com.java.jsf.Provider.daoImpl.ProviderDaoImpl;
 import com.java.jsf.Provider.daoImpl.ProviderOtpDaoImpl;
 import com.java.jsf.Provider.model.ProviderOtp;
 
@@ -29,7 +28,7 @@ public class ProviderOtpController {
 //            e.printStackTrace();
 //            message = "Error sending OTP: " + e.getMessage();
 //        }
-//        return "OtpSent";  // Navigation outcome (page name without extension)
+//        return "OtpSent";
 //    }
 
     // ✅ Method to Verify OTP
@@ -40,7 +39,7 @@ public class ProviderOtpController {
             e.printStackTrace();
             message = "Error verifying OTP: " + e.getMessage();
         }
-        return "OtpVerified";  // Navigation outcome
+        return "OtpVerified";  
     }
 
     // ✅ Method to Get Latest OTP for Provider
@@ -56,7 +55,7 @@ public class ProviderOtpController {
             e.printStackTrace();
             message = "Error fetching OTP: " + e.getMessage();
         }
-        return "LatestOtp";  // Navigation outcome
+        return "LatestOtp";  
     }
 
     // ✅ Method to Mark OTP as Verified Manually
@@ -67,7 +66,7 @@ public class ProviderOtpController {
             e.printStackTrace();
             message = "Error marking OTP: " + e.getMessage();
         }
-        return "OtpMarked";  // Navigation outcome
+        return "OtpMarked";  
     }
 
     // ===== Getters and Setters =====

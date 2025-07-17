@@ -15,6 +15,11 @@ public class Provider {
 	    private String password;
 	    private LoginStatus status; // Should be "PENDING", "APPROVED", or "REJECTED"
 	    private Date createdAt;
+	    
+	 // ✅ For password update (not persisted to DB)
+	    private String newPassword;
+	    private String confirmPassword;
+
 
 
 		public String getProviderId() {
@@ -89,6 +94,20 @@ public class Provider {
 		public void setCreatedAt(Date createdAt) {
 			this.createdAt = createdAt;
 		}
+		
+		public String getNewPassword() {
+			return newPassword;
+		}
+		public void setNewPassword(String newPassword) {
+			this.newPassword = newPassword;
+		}
+		public String getConfirmPassword() {
+			return confirmPassword;
+		}
+		public void setConfirmPassword(String confirmPassword) {
+			this.confirmPassword = confirmPassword;
+		}
+		
 
 		public Provider(String providerId, String providerName, String hospitalName, String email,String telephone, String address,
 				String city, String state, String zipcode, String password, LoginStatus status, Date createdAt) {
@@ -112,5 +131,4 @@ public class Provider {
 			// TODO Auto-generated constructor stub
 		}
 		
-
 }

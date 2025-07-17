@@ -29,7 +29,12 @@ public class Doctors {
 		public void setProvider(Provider provider) {
 			this.provider = provider;
 		}
-
+		public Provider getProviders() {
+			return providers;
+		}
+		public void setProviders(Provider providers) {
+			this.providers = providers;
+		}
 		public String getDoctorName() {
 			return doctorName;
 		}
@@ -114,9 +119,5 @@ public class Doctors {
 			 this.type = DoctorType.STANDARD;
 			 this.status = DoctorStatus.ACTIVE;
 		}
-		
-
-
-
 
 }

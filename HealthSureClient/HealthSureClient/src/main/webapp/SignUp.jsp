@@ -13,6 +13,8 @@
 
 <body class="bg-gray-100 flex justify-center items-center min-h-screen">
     <h:form prependId="false" styleClass="w-full max-w-5xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    
+    <h:messages globalOnly="true" layout="table" styleClass="text-green-600 font-semibold" />
 
         <h2 class="text-center text-2xl font-semibold text-gray-800 mb-6">Provider SignUp</h2>
 
@@ -123,6 +125,7 @@
             <h:commandButton value="Sign Up" action="#{providerController.register}"
                 styleClass="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded shadow-md" />
         </div>
+        
     </h:form>
 </body>
 </html>

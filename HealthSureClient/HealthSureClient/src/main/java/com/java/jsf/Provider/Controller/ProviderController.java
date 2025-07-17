@@ -2,8 +2,6 @@ package com.java.jsf.Provider.Controller;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -28,20 +26,19 @@ public class ProviderController implements Serializable{
     
 	private Provider provider = new Provider();
 	private String otpCode;
-	
-	private ProviderDao providerDao;
-    private ProviderOtpDao providerOtpDao;
+	private ProviderDao providerDaoImpl;
+    private ProviderOtpDao providerOtpDaoImpl;
     
     public ProviderController() {
         // Manually initialize DAO implementations
-        this.providerDao = new ProviderDaoImpl();
-        this.providerOtpDao = new ProviderOtpDaoImpl();
+       providerDaoImpl = new ProviderDaoImpl();
+       providerOtpDaoImpl = new ProviderOtpDaoImpl();
     }
 
 
     // ✅ Register a new provider with password confirmation
     public String register() throws Exception {
-    	System.out.println("controller callesd______________________________________");
+    	System.out.println("controller called...");
         System.out.println("Registering provider...");
         boolean a=false;
 
@@ -50,7 +47,7 @@ public class ProviderController implements Serializable{
             return null;
         } 
 
-        if (providerDao == null || providerOtpDao == null) {
+        if (providerDaoImpl == null || providerOtpDaoImpl == null) {
             System.out.println("DAO is not initialized!");
             return null;
         }
@@ -81,7 +78,7 @@ public class ProviderController implements Serializable{
         }
 
         // ✅ Email Uniqueness Check
-        if (providerDao.emailExists(provider.getEmail())) {
+        if (providerDaoImpl.emailExists(provider.getEmail())) {
         	System.out.println(14);
         	FacesContext.getCurrentInstance().addMessage("email",
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, "Email already exists.", null));
@@ -97,7 +94,7 @@ public class ProviderController implements Serializable{
         }
 
         // ✅ Phone Number Uniqueness Check
-        if (providerDao.phoneExists(provider.getTelephone())) {
+        if (providerDaoImpl.phoneExists(provider.getTelephone())) {
         	System.out.println(16);
         	FacesContext.getCurrentInstance().addMessage("telephone",
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, "Phone number already exists.",null));
@@ -113,7 +110,7 @@ public class ProviderController implements Serializable{
         }
 
         // ✅ Zipcode Uniqueness Check
-        if (providerDao.zipcodeExists(provider.getZipcode())) {
+        if (providerDaoImpl.zipcodeExists(provider.getZipcode())) {
         	System.out.println(18);
         	FacesContext.getCurrentInstance().addMessage("zipcode",
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, "Zipcode already exists.", null));
@@ -125,11 +122,12 @@ public class ProviderController implements Serializable{
         provider.setStatus(LoginStatus.PENDING);
 
         // Save provider to database
-        providerDao.addProvider(provider);
+        providerDaoImpl.addProvider(provider);
         System.out.println("Provider added successfully.");
-
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+        
         // Generate OTP
-        String otp = providerOtpDao.generateOtp(provider.getEmail());
+        String otp = providerOtpDaoImpl.generateOtp(provider);
 
         // Simulate sending OTP (replace with actual email/SMS logic)
         System.out.println("OTP sent to: " + provider.getEmail() + " | OTP: " + otp);
@@ -143,27 +141,42 @@ public class ProviderController implements Serializable{
     }
     
  // ✅ Submit OTP
-    public String verifyOtp(String email, String inputOtp) throws Exception {
-        ProviderOtp latestOtp = providerOtpDao.getLatestOtp(email);
+    
+    private boolean otpVerified = false;
+
+    public boolean isOtpVerified() {
+        return otpVerified;
+    }
+
+    
+    public String verifyOtp() throws Exception {
+    	String email = provider.getEmail();
+    	String inputOtp = this.otpCode;
+        ProviderOtp latestOtp = providerOtpDaoImpl.getLatestOtp(email);
         System.out.println(email+inputOtp);
 
         if (latestOtp == null || !latestOtp.getOtpCode().equals(inputOtp)) {
             FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid OTP.", null));
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "OTP Verified Successfully", null));
+            otpVerified = false;
             return null;
         }
 
         if (latestOtp.getExpiresAt().equals(expiry)) {
             FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_WARN, "OTP has expired.", null));
+            otpVerified = false;
             return null;
         }
 
-        latestOtp.setVerified(true);
-        providerOtpDao.updateOtp(latestOtp);
-
+        latestOtp.setIsVerified(true);
+        providerOtpDaoImpl.updateOtp(latestOtp);
+        
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "OTP Verified Successfully", null));
+        otpVerified = true;
         System.out.println("OTP verified. Provider approved.");
-        return "otpSuccess.jsf?faces-redirect=true";
+        return "GeneratePassword.jsp?faces-redirect=true";
     }
 
     // ✅ Resend OTP
@@ -171,11 +184,11 @@ public class ProviderController implements Serializable{
         String email = (String) FacesContext.getCurrentInstance().getExternalContext()
                 .getSessionMap().get("providerEmail");
 
-        String newOtp = providerOtpDao.generateOtp(email);
+        String newOtp = providerOtpDaoImpl.generateOtp(provider);
         System.out.println("New OTP sent to: " + email + " | OTP: " + newOtp);
 
         FacesContext.getCurrentInstance().addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_INFO, "A new OTP has been sent.", null));
+            new FacesMessage(FacesMessage.SEVERITY_INFO, "New OTP Sent.", null));
         return null;
     }
 
@@ -201,7 +214,7 @@ public class ProviderController implements Serializable{
         String encryptedPassword = EncryptPassword.getCode(provider.getPassword());
         System.out.println("Encrypted password: " + encryptedPassword);
 
-        Provider dbProvider = providerDao.login(provider.getEmail(), encryptedPassword);
+        Provider dbProvider = providerDaoImpl.login(provider.getEmail(), encryptedPassword);
 
         if (dbProvider != null) {
             if (dbProvider.getStatus() == LoginStatus.PENDING) {
@@ -218,6 +231,54 @@ public class ProviderController implements Serializable{
             return null;
         }
     }
+        // ✅ Update password method (NEW)
+        public String updatePassword() throws Exception {
+            System.out.println("Password update triggered");
+
+
+            // Validate inputs
+            if (provider.getEmail() == null || provider.getEmail().trim().isEmpty()
+                    || provider.getNewPassword() == null || provider.getNewPassword().trim().isEmpty()
+                    || provider.getConfirmPassword() == null || provider.getConfirmPassword().trim().isEmpty()) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "All fields are required.", null));
+                return null;
+            }
+
+            // Check if passwords match
+            if (!provider.getNewPassword().equals(provider.getConfirmPassword())) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Passwords do not match.", null));
+                return null;
+            }
+
+            // Encrypt new password
+            String encryptedPassword = EncryptPassword.getCode(provider.getNewPassword());
+
+            // Update password in database
+            boolean updated = providerDaoImpl.updatePasswordByEmail(
+                provider.getEmail().trim(),encryptedPassword
+            );
+
+            if (updated) {
+                System.out.println("Password updated successfully for: " + provider.getEmail());
+
+                // ✅ Clear provider fields for safety
+                provider.setNewPassword(null);
+                provider.setConfirmPassword(null);
+                provider.setPassword(null);
+
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Password updated successfully. Please login.", null));
+
+                // ✅ Redirect to login page
+                return "login?faces-redirect=true";
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "No provider found with this email.", null));
+                return null;
+            }
+        }
 
   
     // ✅ Getters and Setters
@@ -231,19 +292,37 @@ public class ProviderController implements Serializable{
 
 
 	public ProviderOtpDao getProviderOtpDao() {
-		return providerOtpDao;
+		return providerOtpDaoImpl;
 	}
 
 	public void setProviderOtpDao(ProviderOtpDao providerOtpDao) {
-		this.providerOtpDao = providerOtpDao;
+		this.providerOtpDaoImpl = providerOtpDao;
 	}
 	
 	public String getOtpCode() {
 		return otpCode;
 	}
-
-
 	 public void setOtpCode(String otpCode) {
 		 this.otpCode = otpCode;
+	 }
+
+
+	 public ProviderDao getProviderDaoImpl() {
+		return providerDaoImpl;
+	 }
+
+
+	 public void setProviderDaoImpl(ProviderDao providerDaoImpl) {
+		this.providerDaoImpl = providerDaoImpl;
+	 }
+
+
+	 public ProviderOtpDao getProviderOtpDaoImpl() {
+		return providerOtpDaoImpl;
+	 }
+
+
+	 public void setProviderOtpDaoImpl(ProviderOtpDao providerOtpDaoImpl) {
+		this.providerOtpDaoImpl = providerOtpDaoImpl;
 	 }
 }

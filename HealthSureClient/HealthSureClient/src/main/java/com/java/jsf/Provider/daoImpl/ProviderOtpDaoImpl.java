@@ -2,7 +2,6 @@ package com.java.jsf.Provider.daoImpl;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Random;
 
 import org.hibernate.Query;
@@ -18,23 +17,13 @@ import com.java.jsf.Util.SessionHelper;
 public class ProviderOtpDaoImpl implements ProviderOtpDao{
 	Session session;
 	SessionHelper sf;
-	  // Timestamp
-    Timestamp now = new Timestamp(System.currentTimeMillis());
-    Timestamp expiry = new Timestamp(now.getTime() + 2 * 60 * 1000); // 2 minutes
-
+	
 //	@Override
 //	public String insertOtp(ProviderOtp otp) throws ClassNotFoundException, SQLException {
 //		 session = SessionHelper.getSessionFactory().openSession();
 //	        Transaction tx = session.beginTransaction();
 //
-//	        // Set OTP expiry 10 minutes from now
-//	        otp.setExpiresAt(LocalDateTime.now().plusMinutes(10));
-//            otp.setVerified(false);
-//            System.out.println("____________"+otp.getOtpCode());
-//	        session.save(otp);
-//	        tx.commit();
-//
-//	        // Send OTP Email (optional)
+//	        // Send OTP Email
 //	        String subject = "Your OTP for HealthSure Registration";
 //	        String body = "Your OTP is: " + otp.getOtpCode() + ". It is valid for 10 minutes.";
 //	        MailSend.sendInfo(otp.getProviderId(), subject, body);
@@ -45,7 +34,8 @@ public class ProviderOtpDaoImpl implements ProviderOtpDao{
 	@Override
 	public String verifyOtp(String providerId, String otpCode) throws ClassNotFoundException, SQLException {
 		session = SessionHelper.getSessionFactory().openSession();
-
+        
+		
         String hql = "FROM ProviderOtp WHERE providerId = :providerId AND otpCode = :otpCode AND isVerified = false";
         Query query = session.createQuery(hql);
         query.setParameter("providerId", providerId);
@@ -54,19 +44,22 @@ public class ProviderOtpDaoImpl implements ProviderOtpDao{
         ProviderOtp otp = (ProviderOtp) query.uniqueResult();
 
         if (otp != null) {
-            // Check expiry
-            if (otp.getExpiresAt().equals(expiry)) {
-                session.close();
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            System.out.println("OTP Found. Expires at: " + otp.getExpiresAt());
+            System.out.println("Current Time: " + now);
+
+            if (now.after(otp.getExpiresAt())) {
                 return "OTP expired. Please request a new one.";
             }
-
+            else {
             Transaction tx = session.beginTransaction();
-            otp.setVerified(true);
+            otp.setIsVerified(true);
             session.update(otp);
             tx.commit();
             session.close();
 
             return "OTP verified successfully.";
+            }
         } else {
             session.close();
             return "Invalid OTP or already verified.";
@@ -108,7 +101,7 @@ public class ProviderOtpDaoImpl implements ProviderOtpDao{
 	}
 
 	@Override
-	public String generateOtp(String providerId) throws ClassNotFoundException, SQLException {
+	public String generateOtp(Provider provider) throws ClassNotFoundException, SQLException {
 
 		    // Generate a 6-digit OTP
 		    int code = new Random().nextInt(900000) + 100000;
@@ -121,30 +114,31 @@ public class ProviderOtpDaoImpl implements ProviderOtpDao{
 		    try {
 		        tx = session.beginTransaction();
 
-			  
+		        // Timestamp
+		        Timestamp now = new Timestamp(System.currentTimeMillis());
+		        Timestamp expiry = new Timestamp(now.getTime() + 2 * 60 * 1000); // 2 minutes
+
 
 			    // Create OTP entity
-			    ProviderOtp otp = new ProviderOtp();
-			    Provider p = new Provider();
-			    otp.setProviderId(p.getProviderId());
-			    System.out.println("provider is is .........");
-			    System.out.println(p.getProviderId());
-			    //System.out.println();
-			    System.out.println("otp generated is.............");
-			    otp.setOtpCode(otpCode);
-			    System.out.println(otpCode);
-			    otp.setCreatedAt(now);
-			    otp.setExpiresAt(expiry);
-			    otp.setVerified(false);
-
+		        ProviderOtp otp = new ProviderOtp();
+		        otp.setProviderId(provider.getProviderId());
+		       // otp.setProviderId(providerId);
+		        System.out.println("my providerId is................"+provider.getProviderId());
+		        System.out.println(provider.getProviderId());
+		        otp.setOtpCode(otpCode);
+		        otp.setCreatedAt(now);
+		        otp.setExpiresAt(expiry);
+		        otp.setIsVerified(false);
+		        System.out.println("my otp is................");
+		        System.out.println(otp);
 		        session.save(otp);
 		        tx.commit();
 		        
 
-			    //  Send OTP via email
-			    String subject = "Your OTP Code";
-			    String body = "Hi, your OTP code is " + otpCode + ". It is valid for 2 minutes.";
-			    MailSend.sendInfo(providerId, subject, body);
+		     // Send OTP Email
+		        String subject = "Your OTP for HealthSure Registration";
+		        String body = "Your OTP is: " + otp.getOtpCode() + ". It is valid for 2 minutes.";
+		        MailSend.sendInfo(provider.getEmail(), subject, body);
 			    
 		    } catch (Exception e) {
 		        if (tx != null) tx.rollback();

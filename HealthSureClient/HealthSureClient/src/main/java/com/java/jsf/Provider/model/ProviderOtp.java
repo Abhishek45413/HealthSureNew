@@ -9,7 +9,7 @@ public class ProviderOtp {
 	    private String otpCode;
 	    private Timestamp createdAt;
 	    private Timestamp expiresAt;
-	    private boolean isVerified;
+	    private boolean isVerified;   
 	    
 		public int getOtpId() {
 			return otpId;
@@ -41,13 +41,17 @@ public class ProviderOtp {
 		public void setExpiresAt(Timestamp localDateTime) {
 			this.expiresAt = localDateTime;
 		}
-		public boolean isVerified() {
+	
+		
+		
+		
+		
+		public boolean getIsVerified() {
 			return isVerified;
 		}
-		public void setVerified(boolean isVerified) {
+		public void setIsVerified(boolean isVerified) {
 			this.isVerified = isVerified;
 		}
-		
 		public ProviderOtp(int otpId, String providerId, String otpCode, Timestamp createdAt, Timestamp expiresAt,
 				boolean isVerified) {
 			super();
@@ -58,7 +62,6 @@ public class ProviderOtp {
 			this.expiresAt = expiresAt;
 			this.isVerified = isVerified;
 		}
-		
 		public ProviderOtp() {
 			super();
 			// TODO Auto-generated constructor stub
