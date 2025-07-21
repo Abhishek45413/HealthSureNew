@@ -1,15 +1,15 @@
 package com.java.jsf.Provider.model;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+
+import java.sql.Timestamp;
 
 public class ProviderOtp {
 	 private int otpId;
 	    private String providerId;
 	    private String otpCode;
-	    private LocalDateTime createdAt;
-	    private LocalDateTime expiresAt;
-	    private boolean isVerified;
+	    private Timestamp createdAt;
+	    private Timestamp expiresAt;
+	    private boolean isVerified;   
 	    
 		public int getOtpId() {
 			return otpId;
@@ -29,26 +29,30 @@ public class ProviderOtp {
 		public void setOtpCode(String otpCode) {
 			this.otpCode = otpCode;
 		}
-		public LocalDateTime getCreatedAt() {
+		public Timestamp getCreatedAt() {
 			return createdAt;
 		}
-		public void setCreatedAt(LocalDateTime localDateTime) {
-			this.createdAt = localDateTime;
+		public void setCreatedAt(Timestamp now) {
+			this.createdAt = now;
 		}
-		public LocalDateTime getExpiresAt() {
+		public Timestamp getExpiresAt() {
 			return expiresAt;
 		}
-		public void setExpiresAt(LocalDateTime localDateTime) {
+		public void setExpiresAt(Timestamp localDateTime) {
 			this.expiresAt = localDateTime;
 		}
-		public boolean isVerified() {
+	
+		
+		
+		
+		
+		public boolean getIsVerified() {
 			return isVerified;
 		}
-		public void setVerified(boolean isVerified) {
+		public void setIsVerified(boolean isVerified) {
 			this.isVerified = isVerified;
 		}
-		
-		public ProviderOtp(int otpId, String providerId, String otpCode, LocalDateTime createdAt, LocalDateTime expiresAt,
+		public ProviderOtp(int otpId, String providerId, String otpCode, Timestamp createdAt, Timestamp expiresAt,
 				boolean isVerified) {
 			super();
 			this.otpId = otpId;
@@ -58,7 +62,6 @@ public class ProviderOtp {
 			this.expiresAt = expiresAt;
 			this.isVerified = isVerified;
 		}
-		
 		public ProviderOtp() {
 			super();
 			// TODO Auto-generated constructor stub

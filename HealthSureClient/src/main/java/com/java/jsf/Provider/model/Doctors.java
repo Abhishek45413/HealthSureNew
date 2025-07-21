@@ -3,7 +3,6 @@ package com.java.jsf.Provider.model;
 public class Doctors {
 	    
 	    private String doctorId;
-	    private Provider providers;
 	    private String doctorName;
 	    private Gender gender;
 	    private String qualification;
@@ -15,7 +14,7 @@ public class Doctors {
 	    private DoctorType type;  // STANDARD or ADHOC
 	    private DoctorStatus status;
 	    
-	    private Provider provider = new Provider();
+	    private Provider providers = new Provider();
 
 		public String getDoctorId() {
 			return doctorId;
@@ -24,12 +23,17 @@ public class Doctors {
 			this.doctorId = doctorId;
 		}
 		public Provider getProvider() {
-			return provider;
+			return providers;
 		}
 		public void setProvider(Provider provider) {
-			this.provider = provider;
+			this.providers = provider;
 		}
-
+		public Provider getProviders() {
+			return providers;
+		}
+		public void setProviders(Provider providers) {
+			this.providers = providers;
+		}
 		public String getDoctorName() {
 			return doctorName;
 		}
@@ -96,7 +100,7 @@ public class Doctors {
 				DoctorType type, DoctorStatus status) {
 			super();
 			this.doctorId = doctorId;
-			this.provider = provider;
+			this.providers = provider;
 			this.doctorName = doctorName;
 			this.gender = gender;
 			this.qualification = qualification;
@@ -110,13 +114,9 @@ public class Doctors {
 		}
 
 		public Doctors() {
-			 this.provider = new Provider();
+			 this.providers = new Provider();
 			 this.type = DoctorType.STANDARD;
 			 this.status = DoctorStatus.ACTIVE;
 		}
-		
-
-
-
 
 }

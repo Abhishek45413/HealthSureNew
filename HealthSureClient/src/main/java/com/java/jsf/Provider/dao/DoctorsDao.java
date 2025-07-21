@@ -11,5 +11,7 @@ public interface DoctorsDao {
     List<Doctors> searchByProviderId(String providerId) throws Exception;
     void updateDoctors(Doctors doctor) throws Exception;
     void deleteDoctors(int doctorId) throws Exception;
+	String generateDoctorId();
+	void saveDoctor(Doctors doctors);
 
 }

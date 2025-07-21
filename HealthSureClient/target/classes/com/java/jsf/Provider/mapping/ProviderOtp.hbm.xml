@@ -18,6 +18,7 @@
         <property name="createdAt" column="created_at" type="timestamp" insert="false" update="false"/>
 
         <property name="expiresAt" column="expires_at" type="timestamp" not-null="true"/>
+        <property name="isVerified" column="is_verified"  type="boolean" />
 
     </class>
 

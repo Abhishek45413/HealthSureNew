@@ -49,6 +49,10 @@
                 <param name="useNamed">true</param>
             </type>
         </property>
+        
+        <query name="DoctorId">
+                SELECT d.doctorId FROM Doctor d ORDER BY d.doctorId DESC
+        </query>
 
     </class>
 

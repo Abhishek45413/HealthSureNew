@@ -94,8 +94,9 @@
         <h:commandLink value="Home" action="HomePage"/>
         <h:commandLink value="SignUp" action="SignUp"/>
         <h:commandLink value="Login" action="Login"/>
+        <h:commandLink value="Doctors" action="AddDoctors"/>
         <h:commandLink value="Contact Us" action="Contact"/>
-        <h:commandLink value="Logout" action="Logout"/>
+        
     </h:form>
 </nav>
 

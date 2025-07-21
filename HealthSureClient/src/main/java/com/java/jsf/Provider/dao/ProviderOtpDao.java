@@ -2,16 +2,17 @@ package com.java.jsf.Provider.dao;
 
 import java.sql.SQLException;
 
+import com.java.jsf.Provider.model.Provider;
 import com.java.jsf.Provider.model.ProviderOtp;
 
 
 public interface ProviderOtpDao {
 
 	 // ✅ Generate and insert OTP by email directly
-    String generateOtp(String providerEmail) throws ClassNotFoundException, SQLException;
+    String generateOtp(Provider provider ) throws ClassNotFoundException, SQLException;
 
     // ✅ Insert a manually created OTP record
-    String insertOtp(ProviderOtp otp) throws ClassNotFoundException, SQLException;
+   // String insertOtp(ProviderOtp otp) throws ClassNotFoundException, SQLException;
 
     // ✅ Verify if OTP is correct for a given provider
     String verifyOtp(String providerEmail, String otpCode) throws ClassNotFoundException, SQLException;
